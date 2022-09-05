@@ -1,13 +1,15 @@
 const express = require('express');
 const cors = require('cors');
-
-// create and config server
 const server = express();
+const movies = require('./data/movies.json');
+server.get('/movies', (req, resp) => {
+  const id = req.query.id;
+  resp.json({ sucess: true, movies });
+});
+
 server.use(cors());
 server.use(express.json());
-
-// init express aplication
-const serverPort = 4000;
-server.listen(serverPort, () => {
-  console.log(`Server listening at http://localhost:${serverPort}`);
+const port = 4000;
+server.listen(port, () => {
+  console.log('listening' + port);
 });
