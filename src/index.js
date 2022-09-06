@@ -3,6 +3,7 @@
 // Importamos los dos módulos de NPM necesarios para trabajar
 const express = require('express');
 const cors = require('cors');
+const movies = require('./data/movies.json');
 
 // Creamos el servidor
 const server = express();
@@ -19,10 +20,13 @@ server.listen(port, () => {
 });
 
 //Pedimos todas las peliculas
-const movies = require('./data/movies.json');
 server.get('/movies', (req, resp) => {
-  const id = req.query.id;
-  resp.json({ sucess: true, movies });
+  const genderFilterParam = req.query.gender;
+  const filterByGender = movies.filter((item)=>item.gender === genderFilterParam)
+  resp.json({ 
+    sucess: true,
+    movies: filterByGender 
+  });
 });
 
 
