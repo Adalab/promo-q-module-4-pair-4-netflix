@@ -35,8 +35,8 @@ server.get('/movies', (req, resp) => {
     });
 });
 
-function sortFunctions(param) {
-  if (param === 'asc') {
+function sortFunctions(params) {
+  if (params === 'asc') {
     return sortAsc();
   } else {
     return sortDesc();
@@ -52,7 +52,7 @@ function sortDesc() {
       return 1;
     }
     return 0;
-  };
+  }; 
 }
 
 function sortAsc() {

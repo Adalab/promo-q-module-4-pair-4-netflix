@@ -20,8 +20,9 @@ const MoviesList = props => {
   const renderEmptyList = () => {
     return <p>No hay películas en este listado</p>;
   };
-
+console.log(props.movies)
   return props.movies.length ? renderMovieList() : renderEmptyList();
+  
 };
 
 export default MoviesList;
