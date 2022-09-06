@@ -66,3 +66,8 @@ function sortAsc() {
     return 0;
   };
 }
+
+
+const staticServer = './web'; 
+server.use(express.static(staticServer));
+
