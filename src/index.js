@@ -29,10 +29,10 @@ server.get('/movies', (req, resp) => {
       genderFilterParam === '' ? true : movie.gender === genderFilterParam
     )
     .sort(sortFunctions(sortFilterParam));
-    resp.json({ 
-      sucess: true,
-      movies: filterByGender 
-    });
+  resp.json({
+    sucess: true,
+    movies: filterByGender,
+  });
 });
 
 function sortFunctions(params) {
@@ -52,7 +52,7 @@ function sortDesc() {
       return 1;
     }
     return 0;
-  }; 
+  };
 }
 
 function sortAsc() {
@@ -67,7 +67,5 @@ function sortAsc() {
   };
 }
 
-
-const staticServer = './web'; 
+const staticServer = './src/public-react';
 server.use(express.static(staticServer));
-
