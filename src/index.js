@@ -4,7 +4,7 @@
 const express = require('express');
 const cors = require('cors');
 const movies = require('./data/movies.json');
-
+const users = require('./data/users.json');
 // Creamos el servidor
 const server = express();
 
@@ -22,8 +22,6 @@ server.listen(port, () => {
 server.get('/movies', (req, resp) => {
   const genderFilterParam = req.query.gender;
   const sortFilterParam = req.query.sort;
-
-  console.log(sortFilterParam);
   const filterByGender = movies
     .filter((movie) =>
       genderFilterParam === '' ? true : movie.gender === genderFilterParam
@@ -32,6 +30,22 @@ server.get('/movies', (req, resp) => {
   resp.json({
     sucess: true,
     movies: filterByGender,
+  });
+});
+server.post('/login', (req, resp) => {
+  console.log(req.body);
+  users.find((user) => {
+    if (req.body.password === user.password && req.body.email === user.email) {
+      resp.json({
+        success: true,
+        userId: 'id_de_la_usuaria_encontrada',
+      });
+    } else {
+      resp.json({
+        success: false,
+        errorMessage: 'Usuaria/o no encontrada/o',
+      });
+    }
   });
 });
 
