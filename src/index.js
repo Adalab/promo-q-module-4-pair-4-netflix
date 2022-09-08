@@ -1,10 +1,16 @@
 // Fichero src/index.js
 
+//BASE DE DATOS
+const Database = require ('better-sqlite3');
+const db = new Database('./src/db/database.db', { verbose:console.log });
+
+
 // Importamos los dos módulos de NPM necesarios para trabajar
 const express = require('express');
 const cors = require('cors');
-const movies = require('./data/movies.json');
+// const movies = require('./data/movies.json');
 const users = require('./data/users.json');
+const { query } = require('express');
 // Creamos el servidor
 const server = express();
 
@@ -22,14 +28,31 @@ server.listen(port, () => {
 server.get('/movies', (req, resp) => {
   const genderFilterParam = req.query.gender;
   const sortFilterParam = req.query.sort;
-  const filterByGender = movies
-    .filter((movie) =>
-      genderFilterParam === '' ? true : movie.gender === genderFilterParam
-    )
-    .sort(sortFunctions(sortFilterParam));
+  let allMovies
+
+    if (genderFilterParam === "")
+    {
+      const queryBase = db.prepare(`SELECT * FROM movies`)
+    allMovies = queryBase.all();}
+    else{
+      const filterByGender =
+      db.prepare(`
+      SELECT *
+      FROM movies
+      WHERE gender = ?
+    `)
+    allMovies = filterByGender.all(genderFilterParam);
+    }
+
+console.log(allMovies);
+  // const filterByGender = allMovies
+  //   .filter((movie) =>
+  //     genderFilterParam === '' ? true : movie.gender === genderFilterParam
+  //   )
+  //   .sort(sortFunctions(sortFilterParam));
   resp.json({
     sucess: true,
-    movies: filterByGender,
+    movies: allMovies,
   });
 });
 server.post('/login', (req, resp) => {
@@ -49,37 +72,39 @@ server.post('/login', (req, resp) => {
   });
 });
 
-function sortFunctions(params) {
-  if (params === 'asc') {
-    return sortAsc();
-  } else {
-    return sortDesc();
-  }
-}
+// function sortFunctions(params) {
+//   if (params === 'asc') {
+//     return sortAsc();
+//   } else {
+//     return sortDesc();
+//   }
+// }
 
-function sortDesc() {
-  return (a, b) => {
-    if (a.title > b.title) {
-      return -1;
-    }
-    if (a.title < b.title) {
-      return 1;
-    }
-    return 0;
-  };
-}
+// function sortDesc() {
+//   return (a, b) => {
+//     if (a.title > b.title) {
+//       return -1;
+//     }
+//     if (a.title < b.title) {
+//       return 1;
+//     }
+//     return 0;
+//   };
+// }
 
-function sortAsc() {
-  return (a, b) => {
-    if (a.title < b.title) {
-      return -1;
-    }
-    if (a.title > b.title) {
-      return 1;
-    }
-    return 0;
-  };
-}
+// function sortAsc() {
+//   return (a, b) => {
+//     if (a.title < b.title) {
+//       return -1;
+//     }
+//     if (a.title > b.title) {
+//       return 1;
+//     }
+//     return 0;
+//   };
+// }
 
 const staticServer = './src/public-react';
 server.use(express.static(staticServer));
+
+
