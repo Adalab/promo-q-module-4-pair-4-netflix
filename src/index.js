@@ -88,9 +88,15 @@ server.post('/login', (req, resp) => {
 server.post('/sign-up', (req, resp) => {
   const newUser = req.body;
   const queryNewUser = dbUsers.prepare(
-    'INSERT INTO users (id, name, email, password) VALUE (id = ?, )'
+    'INSERT INTO users (id, name, email, password) VALUE (?, ?, ?, ?)'
   );
-  allUsers = queryNewUser.run(newUser.id);
+  const resultNewUser = queryNewUser.run(
+    newUser.id,
+    newUser.name,
+    newUser.email,
+    newUser.password
+  );
+  resp.json({ succes: true, userId: newUser.id, resultNewUser });
 });
 const staticServer = './src/public-react';
 server.use(express.static(staticServer));
