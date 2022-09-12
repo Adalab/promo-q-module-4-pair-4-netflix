@@ -27,27 +27,35 @@ server.listen(port, () => {
 server.get('/movies', (req, resp) => {
   const genderFilterParam = req.query.gender;
   const sortFilterParam = req.query.sort;
-  console.log(sortFilterParam);
   let allMovies;
 
-  if (genderFilterParam === '') {
-    const queryBase = db.prepare(`SELECT * FROM movies`);
+  if (genderFilterParam == '') {
+    const queryBase = db.prepare(`SELECT * FROM movies ORDER BY ASC`);
     allMovies = queryBase.all();
-  } else {
+  }
+  if (sortFilterParam === 'asc') {
     const filterByGender = db.prepare(`
       SELECT *
       FROM movies
       WHERE gender = ?
+      ORDER BY ASC
     `);
     allMovies = filterByGender.all(genderFilterParam);
-  }
-  if (sortFilterParam === 'asc') {
-    const filterBySort = db.prepare(`
-    SELECT *
-    FROM movies
-    ORDER BY title ASC
+
+    if (sortFilterParam === 'desc') {
+      const queryBase = db.prepare(`SELECT * FROM movies ORDER BY DESC`);
+      allMovies = queryBase.all();
+    }
+
+    if (sortFilterParam === 'desc') {
+      const filterByGender = db.prepare(`
+      SELECT *
+      FROM movies
+      WHERE gender = ?
+      ORDER BY DESC
     `);
-    allMovies = filterBySort.all();
+      allMovies = filterByGender.all(genderFilterParam);
+    }
   }
   resp.json({
     sucess: true,
